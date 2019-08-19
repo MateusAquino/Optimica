@@ -1,0 +1,13 @@
+Host: www.chemspider.com
+Connection: keep-alive
+Accept: */*
+Origin: http://www.chemspider.com
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36
+Content-Type: application/x-www-form-urlencoded
+Referer: http://www.chemspider.com/FullSearch.aspx
+Accept-Encoding: gzip, deflate
+Accept-Language: pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,de;q=0.6,fr;q=0.5,la;q=0.4,gl;q=0.3,el;q=0.2
+Cookie: X-Mapping-kckcchol=31B80B8C430F3CFD459702BE367D5804; ASP.NET_SessionId=lzdglfqkldig1yykhvxpb0aa; CSSESSID=0358f810-a16c-4907-922e-939d77a44f42; APPLET_TYPE=ketcher
+
+gg=1

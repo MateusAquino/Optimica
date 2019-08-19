@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -77,7 +78,7 @@ public class OptimicaCanvas extends JComponent implements MouseListener, MouseMo
 	}
 	
 	boolean verbose = true;
-	int raioConectado = 8;
+	int raioConectado = 20;
 	Vertice ultimo = null;
 	boolean primeira = true;
 	private void ident(int x, int y){
@@ -94,26 +95,38 @@ public class OptimicaCanvas extends JComponent implements MouseListener, MouseMo
 			ultimo = C;
 			substancia.add(C);
 			primeira = false;
-		}
-		boolean encontrou = false;
-		for (Vertice v : substancia)
-			if (v.distancia(C)<=raioConectado){
-				if (ultimo==null)
-					ultimo = v;
-				else 
-					v.liga(ultimo);
-				encontrou = true;
-				break;
-			}
-		if (!encontrou) {
-			double maisProx = Integer.MAX_VALUE;
-			Vertice maisProxV = null;
+		} else {
+			boolean encontrou = false;
 			for (Vertice v : substancia)
-				if (v.distancia(C)<maisProx){
-					maisProx = v.distancia(C);
-					maisProxV = v;
+				if (v.distancia(C)<=raioConectado){
+					if (ultimo==null)
+						ultimo = v;
+					else {
+						v.liga(ultimo);
+						ultimo.liga(v);
+						ultimo = v;
+					}
+					encontrou = true;
+					break;
 				}
-			maisProxV.liga(C);
+			if (!encontrou) {
+//				double maisProx = Integer.MAX_VALUE;
+//				Vertice maisProxV = null;
+//				for (Vertice v : substancia)
+//					if (v.distancia(C)<maisProx){
+//						maisProx = v.distancia(C);
+//						maisProxV = v;
+//					}
+//				maisProxV.liga(C);
+//				C.liga(maisProxV);
+//				substancia.add(C);
+				if (ultimo!=null){
+					C.liga(ultimo);
+					ultimo.liga(C);
+				}
+				substancia.add(C);
+				ultimo = C;
+			}
 		}
 	}
 	
@@ -121,8 +134,22 @@ public class OptimicaCanvas extends JComponent implements MouseListener, MouseMo
 		R = -1;
 		angulo = -1;
 		distR = -1;
-		ultimo = null;
 		ident(e.getX(), e.getY());
+		ultimo = null;
+		
+		// RESULTADO
+		CodificadorSMILES cs = new CodificadorSMILES();
+		cs.codificar(substancia);
+		String smiles = cs.get();
+		System.out.println("Encontrado: " + smiles);
+		new Thread(()->{
+			try {
+				Principal.instance.info.setProcurando();
+				new ChemSpider().search(smiles);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}).start();;
 	}
 
 	@Override public void mouseMoved(MouseEvent e) {}
